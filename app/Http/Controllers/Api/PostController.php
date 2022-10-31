@@ -58,6 +58,7 @@ class PostController extends Controller
             'message' => 'Data inserted',
             'posts' => [],
         ]);
+
     }
 
     /**
@@ -68,7 +69,17 @@ class PostController extends Controller
      */
     public function show($id)
     {
-        //
+        $showDetails = Post::find($id);
+        if($showDetails)
+        {
+            return $showDetails;
+        }
+        else{
+            return  response()->json([
+                'status' => true,
+                'msg'=>'Data not Exist'
+            ]);
+        }
     }
 
     /**
@@ -91,7 +102,26 @@ class PostController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $post = Post::find($id);
+
+        if($post)
+        {
+            $post->title            = $request->title;
+            $post->description      = $request->description;
+            $post->save();
+
+            return response()->json([
+                'status'=>true,
+                'msg'=>'Data Updated Successfully'
+            ]);
+
+        }else{
+            return  response()->json([
+                'status'=>true,
+                'message'=>'Nothing to Update'
+            ]);
+        }
+
     }
 
     /**
@@ -104,12 +134,24 @@ class PostController extends Controller
     {
         $delete = Post::find($id);
 
-        $delete->delete();
+        if($delete)
+        {
+            $delete->delete();
 
-        return  response()->JSON([
-            'status' => 200,
-            'message' => 'Data Removed From Database',
-            'post' =>[]
-        ]);
+            return  response()->JSON([
+                'status' => 200,
+                'message' => 'Data Removed From Database',
+                'post' =>[]
+            ]);
+        }
+        else{
+            return  response()->JSON([
+                'status' => 200,
+                'message' => 'Data Not exist in database',
+                'post' =>[]
+            ]);
+        }
+
+
     }
 }
